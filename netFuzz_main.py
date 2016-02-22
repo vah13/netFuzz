@@ -70,7 +70,9 @@ def _generate_mutated_package(seed, raw, loop):
 def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass):
     for __package in _package_list:
         # start generate package
-        _generate_mutated_package(_seed, __package, _loop_count)
+        if _package_list.index(__package) == _bypass:
+            continue
+        _generate_mutated_package(_seed, __package.replace('\n',""), _loop_count)
         # start fuzz loop
         for __loop_step in range(_loop_count):
             try:
@@ -103,9 +105,9 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
 
 def main(argv):
     dump_file = ''
-    loop_count = 90000
+    loop_count = 10000
     address = "192.168.166.1"
-    port = "49152"
+    port = "2638"
     mode = 1
     seed = random.randint(0, 999999999999999999999999)
     bypass = 0
