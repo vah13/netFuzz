@@ -22,7 +22,6 @@ def connect_with_socket(adress, port):
     return _socket
 
 
-
 def send_data(_socket, row, timeout=0.1):
     _socket.send(row)
     _socket.settimeout(timeout)
@@ -32,14 +31,12 @@ def close_socket(_socket):
     _socket.close()
 
 
-
 def recieve_data(_socket):
     _socket.recv(1024 * 1024)
 
 
 def fuzz_dumb_mode(address, port, raw, loop, seed):
     _generate_mutated_package(seed, raw, loop)
-
     for loop_step in range(loop):
         try:
             print(address + ":" + str(port) + " " + str(loop_step))
@@ -51,7 +48,6 @@ def fuzz_dumb_mode(address, port, raw, loop, seed):
                     send_data(__socket, raw)
                     recieve_data(__socket)
                     close_socket(__socket)
-
             except RuntimeException as ex:
                 print("exception 1" + ex.message)
         except Exception as ex:
@@ -60,42 +56,44 @@ def fuzz_dumb_mode(address, port, raw, loop, seed):
 
 
 def _generate_mutated_package(seed, raw, loop):
-    os.system('rm -r ' + tmp_fuzz_folder )
+    os.system('rm -r ' + tmp_fuzz_folder)
     with open('/tmp/vah13_fuzz.bin', 'wb') as f2:
         f2.write(raw)
     os.system('mkdir ' + tmp_fuzz_folder)
     os.system(
-            'cat /tmp/vah13_fuzz.bin | radamsa -n ' + str(loop) + ' -s ' + str(
-                seed) + ' -o ' + tmp_fuzz_folder + "/" + str(
-                    seed) + '%n.rdm')
+        'cat /tmp/vah13_fuzz.bin | radamsa -n ' + str(loop) + ' -s ' + str(
+            seed) + ' -o ' + tmp_fuzz_folder + "/" + str(
+            seed) + '%n.rdm')
     os.system('rm /tmp/vah13_fuzz.bin')
+
 
 def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass):
     for __package in _package_list:
         # start generate package
         if _package_list.index(__package) == _bypass:
             continue
-        _generate_mutated_package(_seed, __package.replace('\n',""), _loop_count)
+        _generate_mutated_package(_seed, __package.strip(), _loop_count)
         # start fuzz loop
         for __loop_step in range(_loop_count):
             try:
                 print(_address + ":" + str(_port) + " " + str(__loop_step))
                 # get mutade package raw
-                with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step+1) + '.rdm', 'r') as file:
+                with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step + 1) + '.rdm', 'r') as file:
                     raw = file.read().replace('\n', '')
                 try:
                     with timeout(1, exception=RuntimeException):
                         __socket = connect_with_socket(_address, _port)
                         for __package_ in _package_list:
-                            if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(__package) != _bypass:
+                            if _package_list.index(__package_) == _package_list.index(
+                                    __package) and _package_list.index(__package) != _bypass:
                                 # send mutate package
                                 send_data(__socket, raw)
-            #                    print(raw)
+                                # print(raw)
                                 recieve_data(__socket)
                             else:
                                 # send work package
                                 send_data(__socket, __package_)
-             #                   print(__package_)
+                                # print(__package_)
                                 recieve_data(__socket)
 
                         close_socket(__socket)
