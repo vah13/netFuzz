@@ -22,6 +22,7 @@ def connect_with_socket(adress, port):
     return _socket
 
 
+
 def send_data(_socket, row, timeout=0.1):
     _socket.send(row)
     _socket.settimeout(timeout)
@@ -29,6 +30,7 @@ def send_data(_socket, row, timeout=0.1):
 
 def close_socket(_socket):
     _socket.close()
+
 
 
 def recieve_data(_socket):
@@ -49,10 +51,11 @@ def fuzz_dumb_mode(address, port, raw, loop, seed):
                     send_data(__socket, raw)
                     recieve_data(__socket)
                     close_socket(__socket)
+
             except RuntimeException as ex:
                 print("exception 1" + ex.message)
         except Exception as ex:
-            print("exception 2" + ex.message)
+            print("exception  122" + ex.message)
     os.system('rm -r ' + tmp_fuzz_folder + '/*')
 
 
