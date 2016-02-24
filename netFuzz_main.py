@@ -55,7 +55,7 @@ def fuzz_dumb_mode(address, port, raw, loop, seed):
             except RuntimeException as ex:
                 print("exception 1" + ex.message)
         except Exception as ex:
-            print("exception  122" + ex.message)
+            print("exception  2" + ex.message)
     os.system('rm -r ' + tmp_fuzz_folder + '/*')
 
 
