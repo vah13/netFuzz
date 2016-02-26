@@ -9,7 +9,7 @@ import getopt
 import os
 import random
 import socket
-
+from timeout import timeout
 
 def load_packages_row(file_path):
     row_dump_file = open(file_path, 'r')
@@ -67,6 +67,15 @@ def _generate_mutated_package(seed, raw, loop):
                     seed) + '%n.rdm')
     os.system('rm /tmp/vah13_fuzz.bin')
 
+@timeout(1)
+def send_recieve(__socket,raw):
+    try:
+        send_data(__socket, raw)
+        recieve_data(__socket)
+    except Exception, ex:
+        print("new timeout " + ex.message)
+
+
 def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass):
     for __package in _package_list:
         # start generate package
@@ -81,19 +90,21 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
                 with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step+1) + '.rdm', 'r') as file:
                     raw = file.read().strip()
                 try:
-                    with timeout(1, exception=RuntimeException):
+                    #with timeout(1, exception=RuntimeException):
                         __socket = connect_with_socket(_address, _port)
                         for __package_ in _package_list:
                             if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(__package) != _bypass:
                                 # send mutate package
-                                send_data(__socket, raw)
+                                send_recieve(__socket,raw)
+                                #send_data(__socket, raw)
             #                    print(raw)
-                                recieve_data(__socket)
+                                #recieve_data(__socket)
                             else:
                                 # send work package
-                                send_data(__socket, __package_.strip())
-             #                   print(__package_)
-                                recieve_data(__socket)
+                                send_recieve(__socket, __package_.strip())
+                                #send_data(__socket, __package_.strip())
+             #                  print(__package_)
+                                #recieve_data(__socket)
 
                         close_socket(__socket)
 
@@ -105,16 +116,16 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
 
 def main(argv):
     dump_file = ''
-    loop_count = 1
+    loop_count = 100
     address = "172.16.10.91"
-    port = "3201"
+    port = "7210"
     mode = 1
-    seed = random.randint(0, 999999999999999999999999)
+    seed = 116283078927627190709725 #random.randint(0, 999999999999999999999999)
     bypass = 0
     global tmp_fuzz_folder
     tmp_fuzz_folder = "/tmp/netFuzz"
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["dfile=", "n=", "o=", "p="])
+        opts, args = getopt.getopt(argv, "hi:o:", ["dfile=", "n=", "o=", "p=", "s="])
     except getopt.GetoptError:
         print('netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port>')
         sys.exit(2)
