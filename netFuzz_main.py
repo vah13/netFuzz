@@ -1,4 +1,7 @@
 #!/usr/bin/python
+from multiprocessing import Pool
+import threading
+
 __version__ = "0.1"
 __author__ = "vah_13"
 
@@ -69,13 +72,35 @@ def _generate_mutated_package(seed, raw, loop):
     os.system('rm /tmp/vah13_fuzz.bin')
 
 
-@timeout(1)
+#@timeout(1)
 def send_recieve(__socket, raw):
     try:
         send_data(__socket, raw)
         recieve_data(__socket)
     except Exception, ex:
         print("new timeout " + ex.message)
+
+def start_fuzz_thread(_address, _port, _seed, _package_list, __package, _bypass, _thread_id):
+    for __loop_step in range(_thread_id*10, (_thread_id+1)*10):
+            try:
+                        print(_address + ":" + str(_port) + " " + str(__loop_step))
+                        # get mutade package raw
+                        with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step + 1) + '.rdm', 'r') as file:
+                            raw = file.read().strip()
+                        try:
+                            __socket = connect_with_socket(_address, _port)
+                            for __package_ in _package_list:
+                                if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(
+                                        __package) != _bypass:
+                                    send_recieve(__socket, raw)  # send mutate package
+                                else:
+                                    send_recieve(__socket, __package_.strip())  # send package
+                            close_socket(__socket)
+
+                        except RuntimeException as ex:
+                            print("exception 1" + ex.message)
+            except Exception as ex:
+                print("exception 2 " + ex.message)
 
 
 def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass):
@@ -85,33 +110,16 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
             continue
         _generate_mutated_package(_seed, __package.strip(), _loop_count)
         # start fuzz loop
-        for __loop_step in range(_loop_count):
-            try:
-                print(_address + ":" + str(_port) + " " + str(__loop_step))
-                # get mutade package raw
-                with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step + 1) + '.rdm', 'r') as file:
-                    raw = file.read().strip()
-                try:
-                    __socket = connect_with_socket(_address, _port)
-                    for __package_ in _package_list:
-                        if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(
-                                __package) != _bypass:
-                            send_recieve(__socket, raw)  # send mutate package
-                        else:
-                            send_recieve(__socket, __package_.strip())  # send package
-                    close_socket(__socket)
-
-                except RuntimeException as ex:
-                    print("exception 1" + ex.message)
-            except Exception as ex:
-                print("exception 2" + ex.message)
+        for _thread_id in range(10):
+            t = threading.Thread(target=start_fuzz_thread, args=(_address, _port, _seed, _package_list, __package, _bypass, _thread_id,))
+            t.start()
 
 
 def main(argv):
     dump_file = ''
     loop_count = 100
     address = "172.16.10.91"
-    port = "7210"
+    port = "3201"
     mode = 1
     seed = 116283078927627190709725  # random.randint(0, 999999999999999999999999)
     bypass = 0
