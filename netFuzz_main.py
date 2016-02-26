@@ -13,7 +13,10 @@ import os
 import random
 import socket
 from timeout import timeout
-
+##
+### 1. need add multiple file / package support , 1 file, 1 package
+### 2. fix split function in send operation
+##
 
 def load_packages_row(file_path):
     row_dump_file = open(file_path, 'r')
@@ -80,6 +83,7 @@ def send_recieve(__socket, raw):
     except Exception, ex:
         print("new timeout " + ex.message)
 
+
 def start_fuzz_thread(_address, _port, _seed, _package_list, __package, _bypass, _thread_id):
     for __loop_step in range(_thread_id*2000, (_thread_id+1)*2000):
             try:
@@ -113,6 +117,7 @@ def intelectual_fuzz_thread(_address, _port, _package_list, _loop_count, _seed, 
         for _thread_id in range(5):
             t = threading.Thread(target=start_fuzz_thread, args=(_address, _port, _seed, _package_list, __package, _bypass, _thread_id,))
             t.start()
+
 
 def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass):
         for __package in _package_list:
