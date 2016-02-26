@@ -11,6 +11,7 @@ import random
 import socket
 from timeout import timeout
 
+
 def load_packages_row(file_path):
     row_dump_file = open(file_path, 'r')
     return row_dump_file.readlines()
@@ -57,18 +58,19 @@ def fuzz_dumb_mode(address, port, raw, loop, seed):
 
 
 def _generate_mutated_package(seed, raw, loop):
-    os.system('rm -r ' + tmp_fuzz_folder )
+    os.system('rm -r ' + tmp_fuzz_folder)
     with open('/tmp/vah13_fuzz.bin', 'wb') as f2:
         f2.write(raw)
     os.system('mkdir ' + tmp_fuzz_folder)
     os.system(
-            'cat /tmp/vah13_fuzz.bin | radamsa -n ' + str(loop) + ' -s ' + str(
-                seed) + ' -o ' + tmp_fuzz_folder + "/" + str(
-                    seed) + '%n.rdm')
+        'cat /tmp/vah13_fuzz.bin | radamsa -n ' + str(loop) + ' -s ' + str(
+            seed) + ' -o ' + tmp_fuzz_folder + "/" + str(
+            seed) + '%n.rdm')
     os.system('rm /tmp/vah13_fuzz.bin')
 
+
 @timeout(1)
-def send_recieve(__socket,raw):
+def send_recieve(__socket, raw):
     try:
         send_data(__socket, raw)
         recieve_data(__socket)
@@ -87,26 +89,17 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
             try:
                 print(_address + ":" + str(_port) + " " + str(__loop_step))
                 # get mutade package raw
-                with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step+1) + '.rdm', 'r') as file:
+                with open(tmp_fuzz_folder + "/" + str(_seed) + str(__loop_step + 1) + '.rdm', 'r') as file:
                     raw = file.read().strip()
                 try:
-                    #with timeout(1, exception=RuntimeException):
-                        __socket = connect_with_socket(_address, _port)
-                        for __package_ in _package_list:
-                            if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(__package) != _bypass:
-                                # send mutate package
-                                send_recieve(__socket,raw)
-                                #send_data(__socket, raw)
-            #                    print(raw)
-                                #recieve_data(__socket)
-                            else:
-                                # send work package
-                                send_recieve(__socket, __package_.strip())
-                                #send_data(__socket, __package_.strip())
-             #                  print(__package_)
-                                #recieve_data(__socket)
-
-                        close_socket(__socket)
+                    __socket = connect_with_socket(_address, _port)
+                    for __package_ in _package_list:
+                        if _package_list.index(__package_) == _package_list.index(__package) and _package_list.index(
+                                __package) != _bypass:
+                            send_recieve(__socket, raw)  # send mutate package
+                        else:
+                            send_recieve(__socket, __package_.strip())  # send package
+                    close_socket(__socket)
 
                 except RuntimeException as ex:
                     print("exception 1" + ex.message)
@@ -120,7 +113,7 @@ def main(argv):
     address = "172.16.10.91"
     port = "7210"
     mode = 1
-    seed = 116283078927627190709725 #random.randint(0, 999999999999999999999999)
+    seed = 116283078927627190709725  # random.randint(0, 999999999999999999999999)
     bypass = 0
     global tmp_fuzz_folder
     tmp_fuzz_folder = "/tmp/netFuzz"
