@@ -2,7 +2,7 @@
 from multiprocessing import Pool
 import threading
 
-__version__ = "0.1"
+__version__ = "0.5"
 __author__ = "vah_13"
 
 from interruptingcow import timeout
