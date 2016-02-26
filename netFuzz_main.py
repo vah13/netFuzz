@@ -81,7 +81,7 @@ def send_recieve(__socket, raw):
         print("new timeout " + ex.message)
 
 def start_fuzz_thread(_address, _port, _seed, _package_list, __package, _bypass, _thread_id):
-    for __loop_step in range(_thread_id*1000, (_thread_id+1)*1000):
+    for __loop_step in range(_thread_id*2000, (_thread_id+1)*2000):
             try:
                         print(_address + ":" + str(_port) + " " + str(__loop_step))
                         # get mutade package raw
@@ -110,7 +110,7 @@ def intelectual_fuzz_thread(_address, _port, _package_list, _loop_count, _seed, 
             continue
         _generate_mutated_package(_seed, __package.strip(), _loop_count)
         # start fuzz loop
-        for _thread_id in range(10):
+        for _thread_id in range(5):
             t = threading.Thread(target=start_fuzz_thread, args=(_address, _port, _seed, _package_list, __package, _bypass, _thread_id,))
             t.start()
 
@@ -157,7 +157,9 @@ def main(argv):
     global tmp_fuzz_folder
     tmp_fuzz_folder = "/tmp/netFuzz"
     try:
-        opts, args = getopt.getopt(argv, "hi:o:", ["dfile=", "n=", "o=", "p=", "s="])
+
+        print(argv)
+        opts, args = getopt.getopt(argv, "hi:o:", ["dump=", "loop=", "address=", "port=", "seed=", "bypass=", "mode=", "thread="])
     except getopt.GetoptError:
         print('netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port>')
         sys.exit(2)
@@ -168,26 +170,29 @@ def main(argv):
             "netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port>"
             sys.exit()
 
-        elif opt in ("-d", "--dfile"):
+        elif opt in "--dump":
             dump_file = arg
 
-        elif opt in "-n":
+        elif opt in "--loop":
             loop_count = arg
 
-        elif opt in "-o":
+        elif opt in "--address":
             address = arg
 
-        elif opt in "-p":
+        elif opt in "--port":
             port = arg
 
-        elif opt in "-m":
+        elif opt in "--mode":
             mode = int(arg)
 
-        elif opt in "-s":
+        elif opt in "--seed":
             seed = arg
 
-        elif opt in "-b":
+        elif opt in "--bypass":
             bypass = arg
+
+        elif opt in "--thread":
+            thread = arg
 
     print('Fuzz input file is ', dump_file)
     print('Fuzz loop count ', loop_count)
