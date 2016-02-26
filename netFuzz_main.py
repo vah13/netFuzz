@@ -149,7 +149,7 @@ def main(argv):
     dump_file = ''
     loop_count = 10000
     address = "172.16.10.91"
-    port = "3201"
+    port = "7210"
     mode = 1
     seed = random.randint(0, 999999999999999999999999)
     bypass = 0
@@ -205,6 +205,6 @@ def main(argv):
             intelectual_fuzz_thread(address, port, package_list, loop_count, seed, bypass)
         else:
             intelectual_fuzz(address, port, package_list, loop_count, seed, bypass)
-            
+
 if __name__ == "__main__":
     main(sys.argv[1:])
