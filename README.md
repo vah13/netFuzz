@@ -6,17 +6,11 @@ how use
 ```
 netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port> -m <fuzz_mode> -s <seed> -b <bypass_fuzz_package>
 ```
-inputfile -> package or packages file in hex format like this (0a - separation packages char)
+inputfile -> package or packages file in hex format like this (\n - separation packages char)
 ```
-60 00 00 00 03 5b 00 00 01 00 00 00 ff ff ff ff
-00 00 04 00 60 00 00 00 00 02 48 00 04 09 00 00
-00 40 00 00 d0 3f 00 00 00 40 00 00 70 00 00 00
-50 4f 50 00 00 00 00 00 00 00 00 00 00 00 00 00
-07 49 35 31 36 34 00 04 50 1c 20 03 59 01 03 72
-01 09 70 64 62 6d 73 72 76 00 06 58 50 4f 50 00
-*0a* 28 00 00 00 03 3f 00 00 01 00 00 00 9c 77 00
-00 00 00 04 00 28 00 00 00 64 62 6d 5f 76 65 72
-73 69 6f 6e 20 20 20 20 20
+414141\n
+424242\n
+10111213\n
 ```
 * -n -> mutation package count
 * -o -> remote address
