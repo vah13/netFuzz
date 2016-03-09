@@ -19,8 +19,13 @@ from timeout import timeout
 ##
 
 def load_packages_row(file_path):
-    row_dump_file = open(file_path, 'r')
-    return row_dump_file.readlines()
+    raw_dump_file = open(file_path, 'r')
+    list = raw_dump_file.readlines()
+    ret = []
+    for _list in list:
+        ret.append(_list.strip().decode('hex'))
+    #return row_dump_file.readlines()
+    return ret
 
 
 def connect_with_socket(adress, port):
