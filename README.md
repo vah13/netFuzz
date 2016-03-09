@@ -4,7 +4,7 @@ This another fuzzer for netRequests
 how use
 1. need install radamsa from https://github.com/aoh/radamsa
 ```
-netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port> -m <fuzz_mode> -s <seed> -b <bypass_fuzz_package>
+--dump <inputfile> --loop <loop_count> --address <remote_address> --port <port> --mode <fuzz_mode_dumb_0> --seed <fuzz_seed> --bypass <bypass_fuzz_pkg> --thread <fuzz_thread_count>
 ```
 inputfile -> package or packages file in hex format like this (\n - separation packages char)
 ```
