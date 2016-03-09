@@ -171,13 +171,15 @@ def main(argv):
         print(argv)
         opts, args = getopt.getopt(argv, "hi:o:", ["dump=", "loop=", "address=", "port=", "seed=", "bypass=", "mode=", "thread="])
     except getopt.GetoptError:
-        print('netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port>')
+        print('netFuzz_main.py --dump <inputfile> --loop <loop_count> --address <remote_address> --port <port> ' \
+              '--mode <fuzz_mode_dumb_0> --seed <fuzz_seed> --bypass <bypass_fuzz_pkg> --thread <fuzz_thread_count>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
             print
-            "netFuzz_main.py --dfile <inputfile> -n <loop_count> -o <remote_address> -p <port>"
+            "netFuzz_main.py --dump <inputfile> --loop <loop_count> --address <remote_address> --port <port> " \
+            "--mode <fuzz_mode_dumb_0> --seed <fuzz_seed> --bypass <bypass_fuzz_pkg> --thread <fuzz_thread_count>"
             sys.exit()
 
         elif opt in "--dump":
