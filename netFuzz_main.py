@@ -107,9 +107,9 @@ def start_fuzz_thread(_address, _port, _seed, _package_list, __package, _bypass,
                             close_socket(__socket)
 
                         except RuntimeException as ex:
-                            print("exception 1" + ex.message)
+                            print("exception 1 thread " + ex.message)
             except Exception as ex:
-                print("exception 2 " + ex.message)
+                print("exception 2 thread " + ex.message)
 
 
 def intelectual_fuzz_thread(_address, _port, _package_list, _loop_count, _seed, _bypass):
@@ -157,13 +157,13 @@ def intelectual_fuzz(_address, _port, _package_list, _loop_count, _seed, _bypass
 
 def main(argv):
     dump_file = ''
-    loop_count = 10000
-    address = "172.16.10.91"
-    port = "7210"
+    loop_count = 50000
+    address = "172.16.10.65"
+    port = "4901"
     mode = 1
     seed = random.randint(0, 999999999999999999999999)
     bypass = 0
-    thread = 1
+    thread = 1 # 1 -> thread ;;;; 0 - single thread
     global tmp_fuzz_folder
     tmp_fuzz_folder = "/tmp/netFuzz"
     try:
